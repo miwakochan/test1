@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trash Segregation Game</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <h1>Trash Segregation Game</h1>
+    <div id="game-area">
+        <div id="trash-items">
+            <div class="item" id="item1">Plastic Bottle</div>
+            <div class="item" id="item2">Banana Peel</div>
+            <div class="item" id="item3">Cardboard Box</div>
+        </div>
+        <div id="bins">
+            <div class="bin" id="biodegradable">Biodegradable</div>
+            <div class="bin" id="non-biodegradable">Non-Biodegradable</div>
+            <div class="bin" id="recyclable">Recyclable</div>
+        </div>
+    </div>
+    <script src="game.js"></script>
+</body>
+</html>
