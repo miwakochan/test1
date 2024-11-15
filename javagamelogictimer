@@ -1,0 +1,112 @@
+let currentScore = 0;
+let highestScore = 0;
+let timer;
+let timeRemaining = 30;
+let trashItems = ['Plastic Bottle', 'Banana Peel', 'Cardboard Box'];
+let itemCategory = ['Non-Biodegradable', 'Biodegradable', 'Recyclable'];
+let currentItemIndex = 0;
+let gameStarted = false;
+
+document.getElementById('quit-button').addEventListener('click', quitGame);
+
+function startGame() {
+    gameStarted = true;
+    currentScore = 0;
+    document.getElementById('current-score').textContent = `Current Score: ${currentScore}`;
+    document.getElementById('highest-score').textContent = `Highest Score: ${highestScore}`;
+    showNextItem();
+}
+
+function showNextItem() {
+    if (currentItemIndex >= trashItems.length) {
+        alert("Game Over!");
+        return;
+    }
+
+    let item = trashItems[currentItemIndex];
+    let category = itemCategory[currentItemIndex];
+
+    let itemElement = document.createElement('div');
+    itemElement.textContent = item;
+    itemElement.id = 'draggable-item';
+    itemElement.classList.add('fade-in');
+    document.getElementById('trash-item').innerHTML = '';
+    document.getElementById('trash-item').appendChild(itemElement);
+    document.getElementById('trash-item').style.display = 'block';
+
+    startTimer();
+
+    // Event listener for drag-and-drop
+    itemElement.draggable = true;
+    itemElement.addEventListener('dragstart', function(event) {
+        event.dataTransfer.setData("text", item);
+    });
+
+    currentItemIndex++;
+}
+
+function startTimer() {
+    timeRemaining = 30;
+    document.getElementById('time-remaining').textContent = `Time Remaining: ${timeRemaining}s`;
+
+    timer = setInterval(function() {
+        if (timeRemaining <= 0) {
+            clearInterval(timer);
+            alert("Time's up!");
+            showNextItem();
+        } else {
+            timeRemaining--;
+            document.getElementById('time-remaining').textContent = `Time Remaining: ${timeRemaining}s`;
+        }
+    }, 1000);
+}
+
+function quitGame() {
+    clearInterval(timer);
+    alert("Game Ended.");
+    window.location.href = 'index.html';  // Redirect to the menu page
+}
+
+function dropItem(event, binType) {
+    event.preventDefault();
+    let droppedItem = event.dataTransfer.getData("text");
+
+    // Check if the item was correctly dropped
+    let correctBin = checkItemCategory(droppedItem, binType);
+
+    if (correctBin) {
+        currentScore++;
+        highestScore = Math.max(currentScore, highestScore);
+        document.getElementById('current-score').textContent = `Current Score: ${currentScore}`;
+        document.getElementById('highest-score').textContent = `Highest Score: ${highestScore}`;
+    } else {
+        alert("Incorrect bin!");
+    }
+
+    showNextItem();
+}
+
+function checkItemCategory(item, binType) {
+    let correctCategory = '';
+    switch (item) {
+        case 'Plastic Bottle':
+            correctCategory = 'Non-Biodegradable';
+            break;
+        case 'Banana Peel':
+            correctCategory = 'Biodegradable';
+            break;
+        case 'Cardboard Box':
+            correctCategory = 'Recyclable';
+            break;
+    }
+    return binType === correctCategory;
+}
+
+document.querySelectorAll('.bin').forEach(bin => {
+    bin.addEventListener('dragover', function(event) {
+        event.preventDefault();
+    });
+    bin.addEventListener('drop', function(event) {
+        dropItem(event, bin.id);
+    });
+});
